@@ -4,6 +4,8 @@
 
 body {
   background-color: #21252b;
+  color: white;
+  height: 100%;
 }
 
 h1,
@@ -16,7 +18,23 @@ h6 {
 }
 
 textarea {
+  display: block;
   background-color: #282c34;
   border-color: #393f49;
-  min-height: 300px;
+  min-height: 120px;
+  width: 100%;
+}
+
+label {
+  position: relative;
+  top: -4px;
+  margin-right: 6px;
+  color: #7e848d;
+  font-size: 11px;
+}
+
+@media only screen and (min-width: 767px) {
+  textarea {
+    min-height: 240px;
+  }
 }

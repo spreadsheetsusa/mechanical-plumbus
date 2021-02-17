@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Confetti from 'react-dom-confetti';
+import { Howl, Howler } from 'howler';
 
 import { ReactComponent as TascFooter } from './media/images/tasc-byline.svg';
 import { ReactComponent as Logo } from './media/images/logo.svg';
@@ -8,6 +9,10 @@ import { useMousetrapListener } from './hooks';
 import { colors, getRandBool, getRandColor } from './utils';
 
 import './style.css';
+
+const clamp = (number, min, max) => {
+  return Math.max(min, Math.min(number, max));
+}
 
 const sndbnk = [
   "1.mp3",
@@ -50,7 +55,22 @@ const sndbnk = [
   "wet.mp3",
   "whoawhoa.mp3",
   "whoop-ding.mp3",
-]
+];
+
+// var sound = new Howl({
+//   src: ['sounds.mp3'],
+//   sprite: {
+//     blast: [0, 3000],
+//     laser: [4000, 1000],
+//     winner: [6000, 5000]
+//   }
+// });
+
+// // Change global volume.
+// Howler.volume(0.5);
+
+// Shoot the laser!
+// sound.play('laser');
 
 const config = () => ({
   angle: Math.floor(Math.random() * 359),
@@ -60,9 +80,9 @@ const config = () => ({
   dragFriction: 0.12,
   duration: 2000,
   stagger: Math.floor(Math.random() * 20),
-  width: "7px",
-  height: "7px",
-  perspective: "999px",
+  width: "4px",
+  height: "4px",
+  perspective: clamp(Math.floor(Math.random() * 998), 200, 999),
   colors
 });
 
@@ -76,30 +96,56 @@ export const App = () => {
     localStorage.setItem('textVal', e.target.value)
     setIsConfettiActive(true);
     const rand = Math.floor(Math.random() * sndbnk.length);
-    new Audio(`/audio/${sndbnk[rand]}`).play();
+
+    const sound = new Howl({
+      src: [`/audio/${sndbnk[rand]}`]
+    });
+    sound.play();
+
     setTimeout(() => getRandBool() && setIsConfettiActive(false), 100);
-  }
+  };
+
+  const setVolume = (val) => {
+    Howler.volume(val.target.valueAsNumber / 100);
+  };
 
   return (
-    <div className="container mx-auto">
-      <header className="w-full mx-auto mt-10 mb-8 text-center md:w-1/2">
-        <Logo className="w-64 m-auto transition-all duration-200 type-logo" style={{ fill: getRandColor() }} />
+    <div className="container mx-auto mb-0">
+      <header className="w-full mx-auto mt-4 mb-4 text-center md:mt-10 md:mb-8 md:w-1/2">
+        <Logo className="w-40 m-auto transition-all duration-200 md:w-64 type-logo" style={{ fill: getRandColor() }} />
       </header>
 
-      <div className="w-full mx-3 text-left md:w-1/2 md:mx-auto">
+      <div className="w-full px-3 text-left md:w-1/2 md:mx-auto">
         <textarea
           onChange={handleTyping} value={textVal}
-          className="w-full p-3 mx-auto text-left text-white border rounded outline-none mousetrap"
+          className="w-full px-3 py-2 text-white border rounded shadow-xl outline-none mousetrap"
           placeholder="Type something... Get it out."
           autoFocus
         />
-
-        <div className="w-64 mx-auto mt-10 ">
-          <Confetti active={isConfettiActive} config={ config() }/>
-          <a href="https://spreadsheetsusa.com" target="_blank" rel="noopener noreferrer">
-            <TascFooter className="w-64 m-auto fill:current" style={{ fill: '#abb2bf' }} />
-          </a>
+        <div className="flex mt-3">
+          <div className="flex-grow-0">
+            <label htmlFor="vol-control leading-tight">Volume</label>
+          </div>
+          <div className="flex-grow">
+            <input
+              id="vol-control"
+              type="range"
+              min="0"
+              max="100"
+              step="1"
+              onInput={setVolume}
+              onChange={setVolume}
+              className="w-full"
+            />
+          </div>
         </div>
+      </div>
+
+      <div className="w-64 mx-auto mt-6 md:mt-10">
+        <Confetti active={isConfettiActive} config={ config() }/>
+        <a href="https://spreadsheetsusa.com" target="_blank" rel="noopener noreferrer">
+          <TascFooter className="m-auto fill:current" style={{ fill: '#abb2bf', width: '100%' }} />
+        </a>
       </div>
     </div>
   );
