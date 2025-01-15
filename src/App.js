@@ -143,7 +143,7 @@ export const App = () => {
 
       <div className="w-64 mx-auto mt-6 md:mt-10">
         <Confetti active={isConfettiActive} config={ config() }/>
-        <a href="https://spreadsheetsusa.com" target="_blank" rel="noopener noreferrer">
+        <a href="http://spreadsheetsusa.com" target="_blank" rel="noopener noreferrer">
           <TascFooter className="mx-auto overflow-visible" style={{ fill: '#abb2bf', maxWidth: 250 }} />
         </a>
       </div>
